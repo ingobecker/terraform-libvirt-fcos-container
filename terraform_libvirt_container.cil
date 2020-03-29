@@ -1,0 +1,5 @@
+(block terraform_libvirt_container
+    (blockinherit container)
+    (blockinherit net_container)
+    (blockinherit virt_container)
+)
