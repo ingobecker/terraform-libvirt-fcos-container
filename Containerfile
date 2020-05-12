@@ -55,6 +55,8 @@ RUN dnf -y --setopt=tsflags=nodocs install ca-certificates \
       libvirt-libs \
       genisoimage \
       libvirt-client \
+      fcct \
+      jq \
       coreos-installer && \
     dnf clean all
 COPY --from=download /usr/local/bin/terraform /usr/local/bin/
