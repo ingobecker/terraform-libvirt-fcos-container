@@ -1,13 +1,13 @@
-FROM fedora:31 as download
+FROM fedora:33 as download
 
-ARG TF_VERSION=0.12.24
+ARG TF_VERSION=0.14.7
 ARG TF_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}
 
-ARG TF_LIBVIR_VERSION=0.6.2
+ARG TF_LIBVIR_VERSION=0.6.3
 ARG TF_LIBVIR_URL=https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v${TF_LIBVIR_VERSION}
-ARG TF_LIBVIRT_COMMIT=1585292411.8cbe9ad0
+ARG TF_LIBVIRT_COMMIT=1604843676.67f4f2aa
 
-ARG TF_CT_VERSION=v0.5.0
+ARG TF_CT_VERSION=v0.8.0
 ARG TF_CT_URL=https://github.com/poseidon/terraform-provider-ct/releases/download/${TF_CT_VERSION}/terraform-provider-ct-${TF_CT_VERSION}-linux-amd64.tar.gz
 
 RUN dnf -y --setopt=tsflags=nodocs install curl gpg unzip
@@ -27,7 +27,7 @@ RUN GNUPGHOME=$(mktemp -d $HOME/.gnupgXXXXXX) && \
 	sha256sum -c terraform_${TF_VERSION}_SHA256SUMS 2>&1 | grep OK && \
 	unzip terraform_${TF_VERSION}_linux_amd64.zip
 
-RUN curl -s -O -L ${TF_LIBVIR_URL}/terraform-provider-libvirt-${TF_LIBVIR_VERSION}+git.${TF_LIBVIRT_COMMIT}.Ubuntu_18.04.amd64.tar.gz
+RUN curl -s -O -L ${TF_LIBVIR_URL}/terraform-provider-libvirt-${TF_LIBVIR_VERSION}+git.${TF_LIBVIRT_COMMIT}.Ubuntu_20.04.amd64.tar.gz
 RUN curl -s -O -L ${TF_LIBVIR_URL}/terraform-provider-libvirt-${TF_LIBVIR_VERSION}.sha256.asc
 RUN GNUPGHOME=$(mktemp -d $HOME/.gnupgXXXXXX) && \
 	export GNUPGHOME && \
@@ -48,7 +48,7 @@ RUN GNUPGHOME=$(mktemp -d $HOME/.gnupgXXXXXX) && \
 USER root
 RUN mv terraform /usr/local/bin/terraform
 
-FROM fedora:31 as deploy
+FROM fedora:33 as deploy
 
 
 RUN dnf -y --setopt=tsflags=nodocs install ca-certificates \
