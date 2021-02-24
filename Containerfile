@@ -1,14 +1,13 @@
+ARG TF_LIBVIR_VERSION=0.6.3
+
 FROM fedora:33 as download
 
 ARG TF_VERSION=0.14.7
 ARG TF_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}
 
-ARG TF_LIBVIR_VERSION=0.6.3
+ARG TF_LIBVIR_VERSION
 ARG TF_LIBVIR_URL=https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v${TF_LIBVIR_VERSION}
 ARG TF_LIBVIRT_COMMIT=1604843676.67f4f2aa
-
-ARG TF_CT_VERSION=v0.8.0
-ARG TF_CT_URL=https://github.com/poseidon/terraform-provider-ct/releases/download/${TF_CT_VERSION}/terraform-provider-ct-${TF_CT_VERSION}-linux-amd64.tar.gz
 
 RUN dnf -y --setopt=tsflags=nodocs install curl gpg unzip
 RUN useradd -ms /bin/bash deploy
@@ -37,19 +36,12 @@ RUN GNUPGHOME=$(mktemp -d $HOME/.gnupgXXXXXX) && \
 
 RUN tar xfz *.tar.gz
 
-RUN curl -s -O -L ${TF_CT_URL} && curl -s -O -L ${TF_CT_URL}.asc
-RUN GNUPGHOME=$(mktemp -d $HOME/.gnupgXXXXXX) && \
-        export GNUPGHOME && \
-        gpg --import dghubble.asc && \
-        gpg --verify terraform-provider-ct-${TF_CT_VERSION}-linux-amd64.tar.gz.asc terraform-provider-ct-${TF_CT_VERSION}-linux-amd64.tar.gz && \
-        tar xfz terraform-provider-ct-*.tar.gz && \
-	mv terraform-provider-ct-${TF_CT_VERSION}-linux-amd64/terraform-provider-ct .
-
 USER root
 RUN mv terraform /usr/local/bin/terraform
 
 FROM fedora:33 as deploy
 
+ARG TF_LIBVIR_VERSION
 
 RUN dnf -y --setopt=tsflags=nodocs install ca-certificates \
       libvirt-libs \
@@ -67,8 +59,7 @@ WORKDIR /home/deploy
 USER deploy
 
 RUN mkdir -p .terraform.d/plugins
-COPY --from=download /home/deploy/terraform-provider-libvirt .terraform.d/plugins/
-COPY --from=download /home/deploy/terraform-provider-ct .terraform.d/plugins/
+COPY --from=download /home/deploy/terraform-provider-libvirt .terraform.d/plugins/registry.terraform.io/dmacvicar/libvirt/${TF_LIBVIR_VERSION}/linux_amd64/terraform-provider-libvirt_${TF_LIBVIR_VERSION}
 
 WORKDIR /home/deploy/src
 ENV LIBVIRT_DEFAULT_URI="qemu:///system"
