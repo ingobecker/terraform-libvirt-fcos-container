@@ -69,6 +69,7 @@ LABEL SHELL="podman run \
   --name=terraform-libvirt \
   --hostname=terraform-libvirt \
   --userns=keep-id \
+  --net=slirp4netns:enable_ipv6=true \
   --security-opt label=type:terraform_libvirt_container.process \
   -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
   -v .:/home/deploy/src:Z \
