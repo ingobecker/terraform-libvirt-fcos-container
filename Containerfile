@@ -49,7 +49,8 @@ RUN dnf -y --setopt=tsflags=nodocs install ca-certificates \
       libvirt-client \
       fcct \
       jq \
-      coreos-installer && \
+      coreos-installer \
+      bash-completion && \
     dnf clean all
 COPY --from=download /usr/local/bin/terraform /usr/local/bin/
 
@@ -61,6 +62,7 @@ USER deploy
 RUN mkdir -p .terraform.d/plugins
 COPY --from=download /home/deploy/terraform-provider-libvirt .terraform.d/plugins/registry.terraform.io/dmacvicar/libvirt/${TF_LIBVIR_VERSION}/linux_amd64/terraform-provider-libvirt_${TF_LIBVIR_VERSION}
 
+RUN terraform -install-autocomplete
 WORKDIR /home/deploy/src
 ENV LIBVIRT_DEFAULT_URI="qemu:///system"
 LABEL SHELL="podman run \
