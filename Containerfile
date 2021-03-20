@@ -14,7 +14,7 @@ RUN useradd -ms /bin/bash deploy
 WORKDIR /home/deploy
 USER deploy
 
-COPY keys/hashicorp.asc keys/dmacvicar.asc keys/dghubble.asc .
+COPY keys/hashicorp.asc keys/dmacvicar.asc .
 RUN for FILE in linux_amd64.zip SHA256SUMS SHA256SUMS.sig ;\
     do \
       curl -s -O -L ${TF_DOWNLOAD_URL}_${FILE} ;\
