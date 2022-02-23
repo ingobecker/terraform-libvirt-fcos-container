@@ -2,4 +2,6 @@
     (blockinherit container)
     (blockinherit net_container)
     (blockinherit virt_container)
+    (allow process user_tmp_t ( sock_file ( append getattr open read write )))
+    (allow process unconfined_t ( unix_stream_socket ( connectto )))
 )

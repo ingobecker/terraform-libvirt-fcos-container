@@ -32,7 +32,8 @@ RUN dnf -y --setopt=tsflags=nodocs install ca-certificates \
       fcct \
       jq \
       coreos-installer \
-      bash-completion && \
+      bash-completion \
+      openssh-clients && \
     dnf clean all
 COPY --from=download /usr/local/bin/terraform /usr/local/bin/
 
@@ -53,6 +54,8 @@ LABEL SHELL="podman run \
   --net=slirp4netns:enable_ipv6=true \
   --security-opt label=type:terraform_libvirt_container.process \
   -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
+  -v /run/user/1000/gnupg:/gnupg \
   -v .:/home/deploy/src:Z \
+  -e SSH_AUTH_SOCK=/gnupg/S.gpg-agent.ssh \
   -e LANG=C.UTF-8 \
   IMAGE bash"
