@@ -1,6 +1,6 @@
 FROM fedora:35 as download
 
-ARG TF_VERSION=1.1.6
+ARG TF_VERSION=1.2.6
 ARG TF_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}
 
 RUN dnf -y --setopt=tsflags=nodocs install curl gpg unzip
