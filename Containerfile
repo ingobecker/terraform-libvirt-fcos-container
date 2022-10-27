@@ -60,4 +60,5 @@ LABEL SHELL="podman run \
   -v .:/home/deploy/src:Z \
   -e SSH_AUTH_SOCK=/gnupg/S.gpg-agent.ssh \
   -e LANG=C.UTF-8 \
+  -e TF_VAR_* \
   IMAGE bash"

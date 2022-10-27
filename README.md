@@ -58,3 +58,11 @@ This container includes the `libvirt-client` package so you can run
 ```
 
 and similar commands to inspect the state of libvirtd.
+
+There is an option to pass environment variables into the container from sources that are inaccessible from the container using `TF_VARS_*` variables:
+
+```
+$ TF_VARS_SOMETOKEN=$(pass show sometoken) podman container runlabel shell terraform-libvirt
+[deploy@terraform-libvirt src]$ printenv
+TF_VARS_SOMETOKEN=...
+```
