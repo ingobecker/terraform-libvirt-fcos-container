@@ -31,6 +31,12 @@ This allows the container to access the bind mounted libvirt socket.
 $ podman build -t terraform-libvirt .
 ```
 
+If you have a local state directory that you want to access inside the container you can include it into the runlabel like this:
+
+```
+$ podman build -t terraform-libvirt --build-arg state_volume="-v~/tf-state-dir:/terraform-state:Z" .
+```
+
 ## Run
 
 Change into the directory of your terraform root module. Run the following command:

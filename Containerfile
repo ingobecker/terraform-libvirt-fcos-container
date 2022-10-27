@@ -1,6 +1,6 @@
 FROM fedora:35 as download
 
-ARG TF_VERSION=1.2.6
+ARG TF_VERSION=1.3.2
 ARG TF_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}
 
 RUN dnf -y --setopt=tsflags=nodocs install curl gpg unzip
@@ -45,6 +45,7 @@ USER deploy
 RUN terraform -install-autocomplete
 WORKDIR /home/deploy/src
 ENV LIBVIRT_DEFAULT_URI="qemu:///system"
+ARG state_volume=
 LABEL SHELL="podman run \
   --rm \
   -it \
@@ -55,6 +56,7 @@ LABEL SHELL="podman run \
   --security-opt label=type:terraform_libvirt_container.process \
   -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
   -v /run/user/1000/gnupg:/gnupg \
+  ${state_volume} \
   -v .:/home/deploy/src:Z \
   -e SSH_AUTH_SOCK=/gnupg/S.gpg-agent.ssh \
   -e LANG=C.UTF-8 \
